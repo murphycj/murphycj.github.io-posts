@@ -135,24 +135,39 @@ parameratize_dglm_method <- function(data) {
 parameratize_loess_method <- function(window_data) {
 
   # 10-fold cross validation over loess parameters
-  d1 <- c()
-  d2 <- c()
-  d3 <- c()
+  spans = seq(0.1,1,0.05)
+  degrees = c(1,2)
+  
+  i <- 0
+  n = length(spans) * length(degrees) * 2
+  result <- data.frame(span=rep(0,n),degree=rep(0,n),rmse=rep(0,n),rmse_type=rep(0,n))
 
-  for (sp in seq(0.1,1,0.05)) {
-    for (deg in c(1,2)) {
-      ss <- c()
+  for (sp in spans) {
+    for (deg in degrees) {
+      train_rmse <- c()
+      test_rmse <- c()
+      
       for (train_ids in createDataPartition(1:nrow(window_data),10,p=0.7)) {
         train <- window_data[train_ids,]
         test <- window_data[setdiff(1:nrow(window_data),train_ids),]
-        r <- loess(window_sd~gc,span=sp,degree=deg,data=window_data)
+        
+        #train
+        r <- loess(window_sd~gc,span=sp,degree=deg,data=train)
         window_sd_pred <- predict(r,test)
-        ss <- c(ss,sqrt(sum((window_sd_pred-test$window_sd)^2)/nrow(test)))
+        train_rmse <- c(train_rmse,sqrt(sum((window_sd_pred-train$window_sd)^2)/nrow(train)))
+        
+        #test
+        #r <- loess(window_sd~gc,span=sp,degree=deg,data=window_data)
+        window_sd_pred <- predict(r,test)
+        test_rmse <- c(test_rmse,sqrt(sum((window_sd_pred-test$window_sd)^2)/nrow(test)))
+        
       }
-
+      
+      
       d1 <- c(d1,sp)
       d2 <- c(d2,deg)
-      d3 <- c(d3,mean(ss))
+      d3 <- c(d3,mean(train_rmse))
+      d3 <- c(d3,mean(test_rmse))
     }
   }
 
@@ -169,8 +184,12 @@ parameratize_loess_method <- function(window_data) {
 
 }
 
+#load data
+
 cnr <- read.table("./data/HL-WES-18.cnr",sep="\t",header=T)
 liver <- read.table("./data/livers.cnn",sep="\t",header=T)
+
+#create row names and filter what is common between tumor (cnr) and control (liver)
 
 row.names(liver) <- paste(liver$chromosome,liver$start,liver$end,sep="-")
 row.names(cnr) <- paste(cnr$chromosome, cnr$start, cnr$end,sep="-")
