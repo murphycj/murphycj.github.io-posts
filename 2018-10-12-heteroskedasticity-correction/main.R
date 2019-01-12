@@ -135,10 +135,10 @@ parameratize_dglm_method <- function(data) {
 parameratize_loess_method <- function(window_data) {
 
   # 10-fold cross validation over loess parameters
-  spans = seq(0.1,1,0.05)
+  spans = seq(0.1,1,0.01)
   degrees = c(1,2)
   
-  i <- 0
+  i <- 1
   n = length(spans) * length(degrees) * 2
   result <- data.frame(span=rep(0,n),degree=rep(0,n),rmse=rep(0,n),rmse_type=rep(0,n))
 
@@ -152,8 +152,8 @@ parameratize_loess_method <- function(window_data) {
         test <- window_data[setdiff(1:nrow(window_data),train_ids),]
         
         #train
-        r <- loess(window_sd~gc,span=sp,degree=deg,data=train)
-        window_sd_pred <- predict(r,test)
+        r <- loess(window_sd~gc,span=sp,degree=deg,data=train,control=loess.control(surface="direct"))
+        window_sd_pred <- predict(r,train)
         train_rmse <- c(train_rmse,sqrt(sum((window_sd_pred-train$window_sd)^2)/nrow(train)))
         
         #test
@@ -163,21 +163,31 @@ parameratize_loess_method <- function(window_data) {
         
       }
       
+      result[i,"span"] <- sp
+      result[i,"degree"] <- deg
+      result[i,"rmse"] <- mean(train_rmse)
+      result[i,"rmse_type"] <- "train"
       
-      d1 <- c(d1,sp)
-      d2 <- c(d2,deg)
-      d3 <- c(d3,mean(train_rmse))
-      d3 <- c(d3,mean(test_rmse))
+      i <- i + 1
+      
+      result[i,"span"] <- sp
+      result[i,"degree"] <- deg
+      result[i,"rmse"] <- mean(test_rmse)
+      result[i,"rmse_type"] <- "test"
+      
+      i <- i + 1
     }
   }
-
-  result <- data.frame(span=d1,degree=d2,ss=d3)
-  result$degree <- factor(result$degree)
-
-  p <- ggplot(result,aes(y=ss,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (test data)") + theme(text = element_text(size=20))
-  png("./plots/loess-train.png",width=700,height=700)
-  par(mar=c(5,5,5,5))
-  print(p,cex.lab=2.0,cex.main=2.0,cex.axis=2.0)
+  
+  #result$span <- factor(result$span,levels=spans)
+  result$degree <- factor(result$degree,levels=degrees)
+  
+  png("./plots/loess-train.png",width=1400,height=700)
+  print(cowplot::plot_grid(
+    ggplot2::ggplot(result[result$rmse_type=="train",],aes(y=rmse,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (train)") + theme(text = element_text(size=20)),
+    ggplot2::ggplot(result[result$rmse_type=="test",],aes(y=rmse,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (test)") + theme(text = element_text(size=20)),
+    nrow=1
+  ))
   dev.off()
 
   write.csv(result,"./data/loess-cross-validation.csv")
@@ -248,7 +258,7 @@ data$dlgm_predicted <- predict(r1$dispersion,data,type="response")
 
 # create the best loess model
 
-lr <- loess(window_sd~gc,data=window_data,span=0.1,degree=2)
+lr <- loess(window_sd~gc,data=window_data,span=0.1608379,degree=2)
 data$lr_predicted <- predict(lr,data)
 data$lr_predicted[is.na(data$lr_predicted)] <- median(data$lr_predicted,na.rm=T)
 

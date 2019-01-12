@@ -1,0 +1,354 @@
+library(DESeq2)
+?p.adjust
+?install.packages
+getOption("repos")
+?v
+?install.packages
+install.packages('ada',lib='~/Rlibs',repos=c('https://mirrors.sorengard.com/cran/','https://cran.cnr.berkeley.edu/','http://cran.stat.ucla.edu/'))
+file.path("ftp://ftp.ensembl.org/pub", paste("release-", ensversion, sep = ""), "fasta", myrefid, "dna", myrefid.path)
+ensversion=75
+file.path("ftp://ftp.ensembl.org/pub", paste("release-", ensversion, sep = ""), "fasta", myrefid, "dna", myrefid.path)
+getOption("repos")
+load("~/Downloads/ericscript-0.5.5/lib/demo/demo.Summary.RData")
+head(demo.Summary)
+head(demo)
+load("~/Downloads/ericscript-0.5.5/lib/demo/demo.Summary.RData",ex<-new.env())
+ex
+ls.str(ex)
+ex$SummaryMat
+load("~/Downloads/ericscript-0.5.5/lib/demo/GeneFusions.RData",ex<-new.env())
+ex$GeneFusions
+rbinom(5,1,0.5)
+rbinom(5,2,0.5)
+rbinom(5,c(4,5,6,7,8),0.5)
+rbinom(5,3,0.5)
+?rbinom
+rbinom(5,3,0.25)
+rbinom(5,5,0.25)
+rbinom(100,5,0.25)
+hist(rbinom(100,5,0.25)/5)
+coverage = 4
+hist(rbinom(100,coverage,0.25)/coverage)
+hist(rbinom(1000,coverage,0.25)/coverage)
+coverage = 5
+hist(rbinom(1000,coverage,0.25)/coverage)
+coverage = 6
+hist(rbinom(1000,coverage,0.25)/coverage)
+coverage = 10
+hist(rbinom(1000,coverage,0.25)/coverage)
+hist(rbinom(1000,coverage,0.25)/coverage,xlim=c(0,1))
+coverage = 20
+hist(rbinom(1000,coverage,0.25)/coverage,xlim=c(0,1))
+hist(rbinom(1000,coverage,0.33)/coverage,xlim=c(0,1))
+coverage = 5
+hist(rbinom(1000,coverage,0.33)/coverage,xlim=c(0,1))
+coverage = 7
+hist(rbinom(1000,coverage,0.33)/coverage,xlim=c(0,1))
+coverage = 10
+hist(rbinom(1000,coverage,0.33)/coverage,xlim=c(0,1))
+coverage = 1
+coverage = 15
+hist(rbinom(1000,coverage,0.33)/coverage,xlim=c(0,1))
+coverage = 9
+hist(rbinom(1000,coverage,0.33)/coverage,xlim=c(0,1))
+?hist
+x <- rbinom(100, 5)
+x <- rbinom(100, 5,0.5)
+x
+library(stats4)
+nLL <- function(p) -sum(stats::dbinom(x,5,p,log=T))
+fit0 <- mle(nLL,start=list(p=0.1),nobs=NROW(x))
+fit0
+x <- rbinom(100, 5,0.25)
+fit0 <- mle(nLL,start=list(p=0.1),nobs=NROW(x))
+fit0
+fit0@call
+fit0@coef
+fit0@fullcoef
+fit0@vcov
+fit0@min
+fit0@details
+library(emdbook)
+library(bbmle)
+x1 <- rbetabinom(n=1000,prob=0.1,size=50,theta=10)
+hist(x1)
+mtmp <- function(prob,size,theta) { -sum(dbetabinom(x1,prob,size,theta,log=TRUE))#
+}
+m0 <- mle2(mtmp,start=list(prob=0.2,theta=9),data=list(size=50))
+(m0 <- mle2(mtmp,start=list(prob=0.2,theta=9),data=list(size=50)))
+summary(m0)
+p0 <- profile(m0)
+p0
+plot(p0,plot.confstr=T)
+plot(p0,plot.confstr=F)
+plot(p0,plot.confstr=T,absVal=F)
+load(system.file("vignetteData","orob1.rda",package="bbmle"))#
+summary(orob1)
+dim(orob1)
+orob1
+as.numeric(orob1$dilution)
+Results from Crowder (1978):ML1 <- function(prob1,prob2,prob3,theta,x) {#
+prob <- c(prob1,prob2,prob3)[as.numeric(x$dilution)] size <- x$n -sum(dbetabinom(x$m,prob,size,theta,log=TRUE))#
+}
+ML1 <- function(prob1,prob2,prob3,theta,x) {#
+prob <- c(prob1,prob2,prob3)[as.numeric(x$dilution)] size <- x$n -sum(dbetabinom(x$m,prob,size,theta,log=TRUE))#
+}
+ML1 <- function(prob1,prob2,prob3,theta,x) {#
+	prob <- c(prob1,prob2,prob3)[as.numeric(x$dilution)]#
+	size <- x$n#
+	-sum(dbetabinom(x$m,prob,size,theta,log=TRUE))#
+}
+(m1 <- mle2(ML1,start=list(prob1=0.5,prob2=0.5,prob3=0.5,theta=1),#
+            data=list(x=orob1)))
+summary(m1)
+(m1B <- mle2(m~dbetabinom(prob,size=n,theta),#
+             param=list(prob~dilution),#
+             start=list(prob=0.5,theta=1),#
+    data=orob1))
+warnings()
+(m2 <- mle2(ML1,start=as.list(coef(m1)),#
+          control=list(parscale=coef(m1)),#
+          data=list(x=orob1)))
+p2 <- profile(m2,prof.upper=c(Inf,Inf,Inf,theta=2000))
+p2
+ml0 <- function(prob,theta,x) {#
+	size <- x$n#
+	-sum(dbetabinom(x$m,prob,size,theta,log=TRUE))#
+}#
+m0 <- mle2(ml0,start=list(prob=0.5,theta=100),#
+          data=list(x=orob1))
+m0
+summary(m0)
+logLik(m0)
+120*4
+data <- read.table("~/Downloads/T_vs_B.diffexpr.w_symbols.txt")
+data[1:5,]
+data <- read.table("~/Downloads/T_vs_B.diffexpr.w_symbols.txt",header=T)
+data[1:5,]
+data <- data[!is.na(data$padj)]
+data <- data[!is.na(data$padj),]
+dim(data[data$pvalue<=0.05,])
+dim(data[data$padj<=0.05,])
+up <- read.table("~/Downloads/T_vs_B.min_count_10.pval_0.05.up.txt",header=T)
+up <- read.table("~/Downloads/T_vs_B.min_count_10.pval_0.05.up.txt",header=T,sep="\t")
+up[1:5,]
+down <- read.table("~/Downloads/T_vs_B.min_count_10.pval_0.05.down.txt",header=T,sep="\t")
+up <- up[!is.na(up$p.value),]
+down <- down[!is.na(down$p.value),]
+dim(up)
+dim(down)
+dim(data[(data$padj<=0.05) & (data$baseMean>=10),])
+dim(data[(data$padj<=0.05) & (data$baseMean>=20),])
+dim(data[(data$padj<=0.05) & (data$baseMean>=100),])
+dim(data[(data$padj<=0.05) & (data$baseMean>=10),])
+length(row.names(data[(data$padj<=0.05) & (data$baseMean>=10),]))
+length(unique(row.names(data[(data$padj<=0.05) & (data$baseMean>=10),])))
+length(unique(row.names(data[(data$pvalue<=0.05) & (data$baseMean>=10),])))
+dim(data[(data$pvalue<=0.05) & (data$baseMean>=10),])
+data[1:20,]
+data <- read.csv("~/Desktop/deseq.csv")
+data[1:5,]
+dim(data)
+data <- read.csv("~/Desktop/deseq.csv",header=F)
+data[1:5,]
+table(data$V8)
+hist(table(data$V8))
+sort(table(data$V8))
+100000/24
+5400 - 1925
+1500*12
+1500*24
+1925*12
+1900+1600
+3500*24
+900*12*5
+900*12*3
+install.packages("dglm")
+install.packages("statmod")
+setRepositories()
+install.packages("statmod")
+install.packages("statmod",dependencies=T,repos="https://cran.r-project.org/")
+install.packages("GEOQuery",dependencies=T,repos="https://cran.r-project.org/")
+if (!requireNamespace("BiocManager", quietly = TRUE))#
+    install.packages("BiocManager")#
+BiocManager::install("GEOquery", version = "3.8")
+library(GEOquery)
+install.packages("readr",dependencies=T,repos="https://cran.r-project.org/")
+library(GEOquery)
+data <- getGEO("GSE5900")
+Meta(data)
+head(Meta(data))
+data
+head(data)
+Table(data)
+data[1]
+Meta(data[1])
+gsm <- getGEO("GSM11805")
+Meta(gsm)
+Columns(data)
+GPLList(data)
+gse <- getGEO("GSE781")
+GPLList(gse)
+GSMList(gse)
+gse[[1]]
+Meta(gse[[1]])
+GSMList(gse[[1]])
+?getGEO
+gse <- getGEO("GSE781",GSEMatrix=F)
+GSMList(gse)
+GPLList(gse)
+length(GPLList(gse))
+show(data)
+experimentData(data)
+experimentData(data[[1]])
+gsmplatforms <- lapply(GSMList(data),function(x) {Meta(x)$platform_id})
+data <- getGEO("GSE5900",GSEMatrix=F)
+GSMList(data)
+gsmplatforms <- lapply(GSMList(data),function(x) {Meta(x)$platform_id})
+gsmplatforms
+gsmlist = Filter(function(gsm) {Meta(gsm)$platform_id},GSMList(gse))
+length(gsmlist)
+gsmlist = Filter(function(gsm) {Meta(gsm)$platform_id=="GPL570"},GSMList(gse))
+length(gsmlist)
+gsmlist
+gsmlist = Filter(function(data) {Meta(data)$platform_id=="GPL570"},GSMList(data))
+length(gsmlist)
+Table(gsmlist[[1]])[1:5,]
+Table(gsmlist[[1]])[1:10,]
+Columns(gsmlist[[1]])[1:10,]
+probesets <- Table(GPLList(data)[[1]])$ID
+length(probesets)
+data.matrix <- do.call('cbind',lapply(gsmlist,function(x) {tab <- Table(x); mymatch <- match(probesets,tab$ID_REF)}; return(tab$VALUE[mymatch])}))
+data.matrix <- do.call('cbind',lapply(gsmlist,function(x) {tab <- Table(x) mymatch <- match(probesets,tab$ID_REF)} return(tab$VALUE[mymatch])}))
+data.matrix <- do.call('cbind',lapply(gsmlist,function(x)#
+	{tab <- Table(x)#
+	mymatch <- match(probesets,tab$ID_REF)}#
+	return(tab$VALUE[mymatch])}))
+data.matrix <- do.call('cbind',lapply(gsmlist,function(x) {#
+	tab <- Table(x)#
+	mymatch <- match(probesets,tab$ID_REF)}#
+	return(tab$VALUE[mymatch])#
+}))
+data.matrix <- do.call('cbind',lapply(gsmlist,function(x) {#
+	tab <- Table(x)#
+	mymatch <- match(probesets,tab$ID_REF)#
+	return(tab$VALUE[mymatch])#
+}))
+dim(data.matrix)
+data.matrix[1:5,]
+data.matrix <- apply(data.matrix,2,function(x) {as.numeric(as.character(x))})
+data.matrix <- log2(data.matrix)
+boxplot(data.matrix)
+?aggregate
+pval = 5.32e-106
+pval
+-log2(pval)
+-log(pval)
+-log10(pval)
+setwd("~/Dropbox/Documents/Blog/murphycj.github.io-posts/2018-10-12-heteroskedasticity-correction/")
+library(dglm)#
+library(caret)#
+library(ggplot2)
+cnr <- read.table("./data/HL-WES-18.cnr",sep="\t",header=T)#
+liver <- read.table("./data/livers.cnn",sep="\t",header=T)
+row.names(liver) <- paste(liver$chromosome,liver$start,liver$end,sep="-")#
+row.names(cnr) <- paste(cnr$chromosome, cnr$start, cnr$end,sep="-")#
+common <- intersect(row.names(liver),row.names(cnr))#
+#
+cnr <- cnr[common,]#
+liver <- liver[common,]#
+#
+data <- data.frame(gc=1-liver$gc,log2=cnr$log2)
+data  <- data[(data$log2 > -5) & (data$log2 < 5),]#
+data <- data[sample(1:nrow(data),10000),]
+sds <- c()#
+gc_range <- seq(0.25,0.73,0.005)#
+#
+for (window in gc_range) {#
+  tmp <- data[(data$gc>=window) & (data$gc<(window+0.005)),]#
+  sds <- c(sds,sd(tmp$log2)^2)#
+}#
+#
+window_data <- data.frame(gc=gc_range,window_sd=sds)
+spans = seq(0.1,1,0.05)#
+  degrees = c(1,2)#
+  i <- 0#
+  n = length(spans) * length(degrees) * 2#
+  result <- data.frame(span=rep(0,n),degree=rep(0,n),rmse=rep(0,n),rmse_type=rep(0,n))
+for (sp in spans) {#
+    for (deg in degrees) {#
+      train_rmse <- c()#
+      test_rmse <- c()#
+      for (train_ids in createDataPartition(1:nrow(window_data),10,p=0.7)) {#
+        train <- window_data[train_ids,]#
+        test <- window_data[setdiff(1:nrow(window_data),train_ids),]#
+        #train#
+        r <- loess(window_sd~gc,span=sp,degree=deg,data=train)#
+        window_sd_pred <- predict(r,test)#
+        train_rmse <- c(train_rmse,sqrt(sum((window_sd_pred-train$window_sd)^2)/nrow(train)))#
+        #test#
+        #r <- loess(window_sd~gc,span=sp,degree=deg,data=window_data)#
+        window_sd_pred <- predict(r,test)#
+        test_rmse <- c(test_rmse,sqrt(sum((window_sd_pred-test$window_sd)^2)/nrow(test)))#
+      }#
+      d1 <- c(d1,sp)#
+      d2 <- c(d2,deg)#
+      d3 <- c(d3,mean(train_rmse))#
+      d3 <- c(d3,mean(test_rmse))#
+    }#
+  }
+i <- 0#
+  n = length(spans) * length(degrees) * 2#
+  result <- data.frame(span=rep(0,n),degree=rep(0,n),rmse=rep(0,n),rmse_type=rep(0,n))#
+#
+  for (sp in spans) {#
+    for (deg in degrees) {#
+      train_rmse <- c()#
+      test_rmse <- c()#
+      for (train_ids in createDataPartition(1:nrow(window_data),10,p=0.7)) {#
+        train <- window_data[train_ids,]#
+        test <- window_data[setdiff(1:nrow(window_data),train_ids),]#
+        #train#
+        r <- loess(window_sd~gc,span=sp,degree=deg,data=train)#
+        window_sd_pred <- predict(r,test)#
+        train_rmse <- c(train_rmse,sqrt(sum((window_sd_pred-train$window_sd)^2)/nrow(train)))#
+        #test#
+        #r <- loess(window_sd~gc,span=sp,degree=deg,data=window_data)#
+        window_sd_pred <- predict(r,test)#
+        test_rmse <- c(test_rmse,sqrt(sum((window_sd_pred-test$window_sd)^2)/nrow(test)))#
+      }#
+      result[i,"span"] <- sp#
+      result[i,"degree"] <- deg#
+      result[i,"train_rmse"] <- mean(train_rmse)#
+      result[i,"test_rmse"] <- mean(test_rmse)#
+      i <- i + 1#
+      # d1 <- c(d1,sp)#
+      # d2 <- c(d2,deg)#
+      # d3 <- c(d3,mean(train_rmse))#
+      # d3 <- c(d3,mean(test_rmse))#
+    }#
+  }
+results[1:5,]
+result[1:5,]
+test_rmse
+warnings()
+window_sd_pred
+window_sd_pred <- predict(r,train)
+window_sd_pred
+train
+test
+sp
+deg
+predict(r,test)
+r <- loess(window_sd~gc,span=sp,degree=deg,data=train)
+r
+predict(r,test)
+predict(r,data.frame(gc=0.3,window_sd=1))
+predict(r,data.frame(gc=0.25,window_sd=1))
+predict(r,data.frame(gc=0.20,window_sd=1))
+predict(r,data.frame(gc=0.255,window_sd=1))
+predict(r,data.frame(gc=0.254,window_sd=1))
+r <- loess(window_sd~gc,span=sp,degree=deg,data=train,control=loess.control(surface="direct"))
+predict(r,data.frame(gc=0.254,window_sd=1))
+predict(r,data.frame(gc=0.255,window_sd=1))
+?loess
