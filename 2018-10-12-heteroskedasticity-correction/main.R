@@ -258,7 +258,7 @@ data$dlgm_predicted <- predict(r1$dispersion,data,type="response")
 
 # create the best loess model
 
-lr <- loess(window_sd~gc,data=window_data,span=0.1608379,degree=2)
+lr <- loess(window_sd~gc,data=window_data,span=0.42,degree=2)
 data$lr_predicted <- predict(lr,data)
 data$lr_predicted[is.na(data$lr_predicted)] <- median(data$lr_predicted,na.rm=T)
 
