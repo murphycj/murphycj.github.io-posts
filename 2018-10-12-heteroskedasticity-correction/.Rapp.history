@@ -1,38 +1,3 @@
-library(DESeq2)
-?p.adjust
-?install.packages
-getOption("repos")
-?v
-?install.packages
-install.packages('ada',lib='~/Rlibs',repos=c('https://mirrors.sorengard.com/cran/','https://cran.cnr.berkeley.edu/','http://cran.stat.ucla.edu/'))
-file.path("ftp://ftp.ensembl.org/pub", paste("release-", ensversion, sep = ""), "fasta", myrefid, "dna", myrefid.path)
-ensversion=75
-file.path("ftp://ftp.ensembl.org/pub", paste("release-", ensversion, sep = ""), "fasta", myrefid, "dna", myrefid.path)
-getOption("repos")
-load("~/Downloads/ericscript-0.5.5/lib/demo/demo.Summary.RData")
-head(demo.Summary)
-head(demo)
-load("~/Downloads/ericscript-0.5.5/lib/demo/demo.Summary.RData",ex<-new.env())
-ex
-ls.str(ex)
-ex$SummaryMat
-load("~/Downloads/ericscript-0.5.5/lib/demo/GeneFusions.RData",ex<-new.env())
-ex$GeneFusions
-rbinom(5,1,0.5)
-rbinom(5,2,0.5)
-rbinom(5,c(4,5,6,7,8),0.5)
-rbinom(5,3,0.5)
-?rbinom
-rbinom(5,3,0.25)
-rbinom(5,5,0.25)
-rbinom(100,5,0.25)
-hist(rbinom(100,5,0.25)/5)
-coverage = 4
-hist(rbinom(100,coverage,0.25)/coverage)
-hist(rbinom(1000,coverage,0.25)/coverage)
-coverage = 5
-hist(rbinom(1000,coverage,0.25)/coverage)
-coverage = 6
 hist(rbinom(1000,coverage,0.25)/coverage)
 coverage = 10
 hist(rbinom(1000,coverage,0.25)/coverage)
@@ -352,3 +317,450 @@ r <- loess(window_sd~gc,span=sp,degree=deg,data=train,control=loess.control(surf
 predict(r,data.frame(gc=0.254,window_sd=1))
 predict(r,data.frame(gc=0.255,window_sd=1))
 ?loess
+i <- 0#
+  n = length(spans) * length(degrees) * 2#
+  result <- data.frame(span=rep(0,n),degree=rep(0,n),rmse=rep(0,n),rmse_type=rep(0,n))#
+#
+  for (sp in spans) {#
+    for (deg in degrees) {#
+      train_rmse <- c()#
+      test_rmse <- c()#
+      for (train_ids in createDataPartition(1:nrow(window_data),10,p=0.7)) {#
+        train <- window_data[train_ids,]#
+        test <- window_data[setdiff(1:nrow(window_data),train_ids),]#
+        #train#
+        r <- loess(window_sd~gc,span=sp,degree=deg,data=train,control=loess.control(surface="direct"))#
+        window_sd_pred <- predict(r,train)#
+        train_rmse <- c(train_rmse,sqrt(sum((window_sd_pred-train$window_sd)^2)/nrow(train)))#
+        #test#
+        #r <- loess(window_sd~gc,span=sp,degree=deg,data=window_data)#
+        window_sd_pred <- predict(r,test)#
+        test_rmse <- c(test_rmse,sqrt(sum((window_sd_pred-test$window_sd)^2)/nrow(test)))#
+      }#
+      result[i,"span"] <- sp#
+      result[i,"degree"] <- deg#
+      result[i,"train_rmse"] <- mean(train_rmse)#
+      result[i,"test_rmse"] <- mean(test_rmse)#
+      i <- i + 1#
+      # d1 <- c(d1,sp)#
+      # d2 <- c(d2,deg)#
+      # d3 <- c(d3,mean(train_rmse))#
+      # d3 <- c(d3,mean(test_rmse))#
+    }#
+  }
+result[1:5,]
+dim(result)
+result[70:76,]
+i <- 0#
+  n = length(spans) * length(degrees) * 2#
+  result <- data.frame(span=rep(0,n),degree=rep(0,n),rmse=rep(0,n),rmse_type=rep(0,n))#
+#
+  for (sp in spans) {#
+    for (deg in degrees) {#
+      train_rmse <- c()#
+      test_rmse <- c()#
+      for (train_ids in createDataPartition(1:nrow(window_data),10,p=0.7)) {#
+        train <- window_data[train_ids,]#
+        test <- window_data[setdiff(1:nrow(window_data),train_ids),]#
+        #train#
+        r <- loess(window_sd~gc,span=sp,degree=deg,data=train,control=loess.control(surface="direct"))#
+        window_sd_pred <- predict(r,train)#
+        train_rmse <- c(train_rmse,sqrt(sum((window_sd_pred-train$window_sd)^2)/nrow(train)))#
+        #test#
+        #r <- loess(window_sd~gc,span=sp,degree=deg,data=window_data)#
+        window_sd_pred <- predict(r,test)#
+        test_rmse <- c(test_rmse,sqrt(sum((window_sd_pred-test$window_sd)^2)/nrow(test)))#
+      }#
+      result[i,"span"] <- sp#
+      result[i,"degree"] <- deg#
+      result[i,"rmse"] <- mean(train_rmse)#
+      result[i,"rmse_type"] <- "train"#
+      i <- i + 1#
+      result[i,"rmse"] <- mean(test_rmse)#
+      result[i,"rmse_type"] <- "test"#
+      i <- i + 1#
+    }#
+  }
+result[70:76,]
+len(spans)
+length(spans)
+length(spans)*length(degrees)
+length(spans)*length(degrees)*2
+spans = seq(0.1,1,0.05)#
+  degrees = c(1,2)#
+  i <- 1#
+  n = length(spans) * length(degrees) * 2#
+  result <- data.frame(span=rep(0,n),degree=rep(0,n),rmse=rep(0,n),rmse_type=rep(0,n))#
+#
+  for (sp in spans) {#
+    for (deg in degrees) {#
+      train_rmse <- c()#
+      test_rmse <- c()#
+      for (train_ids in createDataPartition(1:nrow(window_data),10,p=0.7)) {#
+        train <- window_data[train_ids,]#
+        test <- window_data[setdiff(1:nrow(window_data),train_ids),]#
+        #train#
+        r <- loess(window_sd~gc,span=sp,degree=deg,data=train,control=loess.control(surface="direct"))#
+        window_sd_pred <- predict(r,train)#
+        train_rmse <- c(train_rmse,sqrt(sum((window_sd_pred-train$window_sd)^2)/nrow(train)))#
+        #test#
+        #r <- loess(window_sd~gc,span=sp,degree=deg,data=window_data)#
+        window_sd_pred <- predict(r,test)#
+        test_rmse <- c(test_rmse,sqrt(sum((window_sd_pred-test$window_sd)^2)/nrow(test)))#
+      }#
+      result[i,"span"] <- sp#
+      result[i,"degree"] <- deg#
+      result[i,"rmse"] <- mean(train_rmse)#
+      result[i,"rmse_type"] <- "train"#
+      i <- i + 1#
+      result[i,"span"] <- sp#
+      result[i,"degree"] <- deg#
+      result[i,"rmse"] <- mean(test_rmse)#
+      result[i,"rmse_type"] <- "test"#
+      i <- i + 1#
+    }#
+  }
+result[70:76,]
+p1 <- ggplot(result[result$rmse_type=="train",],aes(y=ss,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (train)") + theme(text = element_text(size=20))#
+  p2 <- ggplot(result[result$rmse_type=="test",],aes(y=ss,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (test)") + theme(text = element_text(size=20))
+p1 <- ggplot(result[result$rmse_type=="train",],aes(y=ss,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (train)") + theme(text = element_text(size=20))#
+  p2 <- ggplot(result[result$rmse_type=="test",],aes(y=ss,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (test)") + theme(text = element_text(size=20))#
+  png("./plots/loess-train.png",width=700,height=700)#
+  par(mar=c(5,5,5,5),mfrow=c(1,2))#
+  print(p1,cex.lab=2.0,cex.main=2.0,cex.axis=2.0)#
+  print(p2,cex.lab=2.0,cex.main=2.0,cex.axis=2.0)#
+  dev.off()
+p1 <- ggplot(result[result$rmse_type=="train",],aes(y=rmse,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (train)") + theme(text = element_text(size=20))#
+  p2 <- ggplot(result[result$rmse_type=="test",],aes(y=rmse,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (test)") + theme(text = element_text(size=20))#
+  png("./plots/loess-train.png",width=700,height=700)#
+  par(mar=c(5,5,5,5),mfrow=c(1,2))#
+  print(p1,cex.lab=2.0,cex.main=2.0,cex.axis=2.0)#
+  print(p2,cex.lab=2.0,cex.main=2.0,cex.axis=2.0)#
+  dev.off()
+library(cowplot)
+png("./plots/loess-train.png",width=700,height=700)#
+  print(cowplot::plot_grid(#
+    ggplot2::ggplot(result[result$rmse_type=="train",],aes(y=rmse,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (train)") + theme(text = element_text(size=20)),#
+    ggplot2::ggplot(result[result$rmse_type=="test",],aes(y=rmse,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (test)") + theme(text = element_text(size=20)),#
+    nrow=1#
+  ))#
+  dev.off()
+result$span <- factor(result$span,levels=spans)#
+  result$degree <- factor(result$degree,levels=degrees)
+png("./plots/loess-train.png",width=700,height=700)#
+  print(cowplot::plot_grid(#
+    ggplot2::ggplot(result[result$rmse_type=="train",],aes(y=rmse,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (train)") + theme(text = element_text(size=20)),#
+    ggplot2::ggplot(result[result$rmse_type=="test",],aes(y=rmse,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (test)") + theme(text = element_text(size=20)),#
+    nrow=1#
+  ))#
+  dev.off()
+png("./plots/loess-train.png",width=1400,height=700)#
+  print(cowplot::plot_grid(#
+    ggplot2::ggplot(result[result$rmse_type=="train",],aes(y=rmse,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (train)") + theme(text = element_text(size=20)),#
+    ggplot2::ggplot(result[result$rmse_type=="test",],aes(y=rmse,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (test)") + theme(text = element_text(size=20)),#
+    nrow=1#
+  ))#
+  dev.off()
+spans = seq(0.1,1,0.01)#
+  degrees = c(1,2)#
+  i <- 1#
+  n = length(spans) * length(degrees) * 2#
+  result <- data.frame(span=rep(0,n),degree=rep(0,n),rmse=rep(0,n),rmse_type=rep(0,n))#
+#
+  for (sp in spans) {#
+    for (deg in degrees) {#
+      train_rmse <- c()#
+      test_rmse <- c()#
+      for (train_ids in createDataPartition(1:nrow(window_data),10,p=0.7)) {#
+        train <- window_data[train_ids,]#
+        test <- window_data[setdiff(1:nrow(window_data),train_ids),]#
+        #train#
+        r <- loess(window_sd~gc,span=sp,degree=deg,data=train,control=loess.control(surface="direct"))#
+        window_sd_pred <- predict(r,train)#
+        train_rmse <- c(train_rmse,sqrt(sum((window_sd_pred-train$window_sd)^2)/nrow(train)))#
+        #test#
+        #r <- loess(window_sd~gc,span=sp,degree=deg,data=window_data)#
+        window_sd_pred <- predict(r,test)#
+        test_rmse <- c(test_rmse,sqrt(sum((window_sd_pred-test$window_sd)^2)/nrow(test)))#
+      }#
+      result[i,"span"] <- sp#
+      result[i,"degree"] <- deg#
+      result[i,"rmse"] <- mean(train_rmse)#
+      result[i,"rmse_type"] <- "train"#
+      i <- i + 1#
+      result[i,"span"] <- sp#
+      result[i,"degree"] <- deg#
+      result[i,"rmse"] <- mean(test_rmse)#
+      result[i,"rmse_type"] <- "test"#
+      i <- i + 1#
+    }#
+  }#
+  result$span <- factor(result$span,levels=spans)#
+  result$degree <- factor(result$degree,levels=degrees)
+png("./plots/loess-train.png",width=1400,height=700)#
+  print(cowplot::plot_grid(#
+    ggplot2::ggplot(result[result$rmse_type=="train",],aes(y=rmse,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (train)") + theme(text = element_text(size=20)),#
+    ggplot2::ggplot(result[result$rmse_type=="test",],aes(y=rmse,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (test)") + theme(text = element_text(size=20)),#
+    nrow=1#
+  ))#
+  dev.off()
+spans = seq(0.1,1,0.01)#
+  degrees = c(1,2)#
+  i <- 1#
+  n = length(spans) * length(degrees) * 2#
+  result <- data.frame(span=rep(0,n),degree=rep(0,n),rmse=rep(0,n),rmse_type=rep(0,n))#
+#
+  for (sp in spans) {#
+    for (deg in degrees) {#
+      train_rmse <- c()#
+      test_rmse <- c()#
+      for (train_ids in createDataPartition(1:nrow(window_data),10,p=0.7)) {#
+        train <- window_data[train_ids,]#
+        test <- window_data[setdiff(1:nrow(window_data),train_ids),]#
+        #train#
+        r <- loess(window_sd~gc,span=sp,degree=deg,data=train,control=loess.control(surface="direct"))#
+        window_sd_pred <- predict(r,train)#
+        train_rmse <- c(train_rmse,sqrt(sum((window_sd_pred-train$window_sd)^2)/nrow(train)))#
+        #test#
+        #r <- loess(window_sd~gc,span=sp,degree=deg,data=window_data)#
+        window_sd_pred <- predict(r,test)#
+        test_rmse <- c(test_rmse,sqrt(sum((window_sd_pred-test$window_sd)^2)/nrow(test)))#
+      }#
+      result[i,"span"] <- sp#
+      result[i,"degree"] <- deg#
+      result[i,"rmse"] <- mean(train_rmse)#
+      result[i,"rmse_type"] <- "train"#
+      i <- i + 1#
+      result[i,"span"] <- sp#
+      result[i,"degree"] <- deg#
+      result[i,"rmse"] <- mean(test_rmse)#
+      result[i,"rmse_type"] <- "test"#
+      i <- i + 1#
+    }#
+  }#
+  #result$span <- factor(result$span,levels=spans)#
+  result$degree <- factor(result$degree,levels=degrees)
+png("./plots/loess-train.png",width=1400,height=700)#
+  print(cowplot::plot_grid(#
+    ggplot2::ggplot(result[result$rmse_type=="train",],aes(y=rmse,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (train)") + theme(text = element_text(size=20)),#
+    ggplot2::ggplot(result[result$rmse_type=="test",],aes(y=rmse,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (test)") + theme(text = element_text(size=20)),#
+    nrow=1#
+  ))#
+  dev.off()
+spans = seq(0.1,1,0.01)#
+  degrees = c(1,2)#
+  i <- 1#
+  n = length(spans) * length(degrees) * 2#
+  result <- data.frame(span=rep(0,n),degree=rep(0,n),rmse=rep(0,n),rmse_type=rep(0,n))#
+#
+  for (sp in spans) {#
+    for (deg in degrees) {#
+      train_rmse <- c()#
+      test_rmse <- c()#
+      for (train_ids in createDataPartition(1:nrow(window_data),10,p=0.7)) {#
+        train <- window_data[train_ids,]#
+        test <- window_data[setdiff(1:nrow(window_data),train_ids),]#
+        #train#
+        r <- loess(window_sd~gc,span=sp,degree=deg,data=train,control=loess.control(surface="direct"))#
+        window_sd_pred <- predict(r,train)#
+        train_rmse <- c(train_rmse,sqrt(sum((window_sd_pred-train$window_sd)^2)/nrow(train)))#
+        #test#
+        #r <- loess(window_sd~gc,span=sp,degree=deg,data=window_data)#
+        window_sd_pred <- predict(r,test)#
+        test_rmse <- c(test_rmse,sqrt(sum((window_sd_pred-test$window_sd)^2)/nrow(test)))#
+      }#
+      result[i,"span"] <- sp#
+      result[i,"degree"] <- deg#
+      result[i,"rmse"] <- mean(train_rmse)#
+      result[i,"rmse_type"] <- "train"#
+      i <- i + 1#
+      result[i,"span"] <- sp#
+      result[i,"degree"] <- deg#
+      result[i,"rmse"] <- mean(test_rmse)#
+      result[i,"rmse_type"] <- "test"#
+      i <- i + 1#
+    }#
+  }#
+  #result$span <- factor(result$span,levels=spans)#
+  result$degree <- factor(result$degree,levels=degrees)
+png("./plots/loess-train.png",width=1400,height=700)#
+  print(cowplot::plot_grid(#
+    ggplot2::ggplot(result[result$rmse_type=="train",],aes(y=rmse,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (train)") + theme(text = element_text(size=20)),#
+    ggplot2::ggplot(result[result$rmse_type=="test",],aes(y=rmse,x=span,col=degree,group=degree)) + geom_line() + xlab("Span") + ylab("Average RMSE (test)") + theme(text = element_text(size=20)),#
+    nrow=1#
+  ))#
+  dev.off()
+dim(result)
+result
+result[result$rmse_type=="test",]
+result[(result$rmse_type=="test") & (result$span==1),]
+result[(result$rmse_type=="test") && (result$span==1),]
+dim(result)
+result[(result$rmse_type=="test") & (result$span==1),]
+result[(result$rmse_type=="test") & (result$degree==2),]
+r1 <- dglm(log2~gc,~gc+I(gc^2)+I(gc^3),data=data,family=gaussian)#
+data$dlgm_predicted <- predict(r1$dispersion,data,type="response")
+lr <- loess(window_sd~gc,data=window_data,span=0.1608379,degree=2)#
+data$lr_predicted <- predict(lr,data)#
+data$lr_predicted[is.na(data$lr_predicted)] <- median(data$lr_predicted,na.rm=T)
+data$y_loess_corrected <- data$log2*sqrt(min(data$lr_predicted,na.rm=T))/sqrt(data$lr_predicted)#
+data$y_dglm_corrected <- data$log2*sqrt(min(data$dlgm_predicted,na.rm=T))/sqrt(data$dlgm_predicted)
+png("./plots/variance.png",width=700,height=700)#
+par(mar=c(6,6,3,3))#
+plot(#
+  gc_range,#
+  sds,#
+  main="Variance estimation",#
+  ylab="log2(tumor/liver) variance",#
+  xlab="GC content",#
+  pch=16,#
+  xlim=c(0,1),#
+  ylim=c(0,5),#
+  cex.lab=2.0,#
+  cex.main=2.0,#
+  cex.axis=2.0#
+)#
+dev.off()#
+png("./plots/variance-estimate.png",width=700,height=700)#
+par(mar=c(6,6,3,3))#
+plot(#
+  gc_range,#
+  sds,#
+  main="Variance estimation",#
+  ylab="log2(tumor/liver) variance",#
+  xlab="GC content",#
+  pch=16,#
+  xlim=c(0,1),#
+  ylim=c(0,5),#
+  cex.lab=2.0,#
+  cex.main=2.0,#
+  cex.axis=2.0#
+)#
+lines(#
+  gc_range,#
+  predict(r1$dispersion.fit,data.frame(gc=gc_range),type="response"),#
+  col="red",#
+  pch=16,#
+  lwd=3#
+)#
+lines(#
+  gc_range,#
+  predict(lr,window_data),#
+  col="green",#
+  pch=16,#
+  lwd=3#
+)#
+legend("topleft",c("Window estimate","DGLM estimate","LOESS estimate"),col=c("black","red","green"),pch=16)#
+dev.off()#
+png("./plots/corrected-data.png",width=1400,height=700)#
+par(mfrow=c(1,2),mar=c(5,5,5,5))#
+smoothScatter(#
+  data$gc,#
+  data$y_loess_corrected,#
+  ylim=c(-5,5),#
+  xlim=c(0,1),#
+  main="LOESS corrected data",#
+  ylab="log2(tumor/liver)",#
+  xlab="GC content",#
+  cex.lab=2.0,#
+  cex.main=2.0,#
+  cex.axis=2.0#
+)#
+smoothScatter(#
+  data$gc,#
+  data$y_dglm_corrected,#
+  ylim=c(-5,5),#
+  xlim=c(0,1),#
+  main="DGLM corrected data",#
+  ylab="log2(tumor/liver)",#
+  xlab="GC content",#
+  cex.lab=2.0,#
+  cex.main=2.0,#
+  cex.axis=2.0#
+)#
+dev.off()
+lr <- loess(window_sd~gc,data=window_data,span=0.42,degree=2)#
+data$lr_predicted <- predict(lr,data)#
+data$lr_predicted[is.na(data$lr_predicted)] <- median(data$lr_predicted,na.rm=T)#
+#
+#correct the data by multiplying it by a ratio of standard deviations#
+# numerator: minimum estimated standard deviation from the data#
+# denominator: predicted standard deviations at each point#
+#
+data$y_loess_corrected <- data$log2*sqrt(min(data$lr_predicted,na.rm=T))/sqrt(data$lr_predicted)#
+data$y_dglm_corrected <- data$log2*sqrt(min(data$dlgm_predicted,na.rm=T))/sqrt(data$dlgm_predicted)#
+#
+png("./plots/variance.png",width=700,height=700)#
+par(mar=c(6,6,3,3))#
+plot(#
+  gc_range,#
+  sds,#
+  main="Variance estimation",#
+  ylab="log2(tumor/liver) variance",#
+  xlab="GC content",#
+  pch=16,#
+  xlim=c(0,1),#
+  ylim=c(0,5),#
+  cex.lab=2.0,#
+  cex.main=2.0,#
+  cex.axis=2.0#
+)#
+dev.off()#
+png("./plots/variance-estimate.png",width=700,height=700)#
+par(mar=c(6,6,3,3))#
+plot(#
+  gc_range,#
+  sds,#
+  main="Variance estimation",#
+  ylab="log2(tumor/liver) variance",#
+  xlab="GC content",#
+  pch=16,#
+  xlim=c(0,1),#
+  ylim=c(0,5),#
+  cex.lab=2.0,#
+  cex.main=2.0,#
+  cex.axis=2.0#
+)#
+lines(#
+  gc_range,#
+  predict(r1$dispersion.fit,data.frame(gc=gc_range),type="response"),#
+  col="red",#
+  pch=16,#
+  lwd=3#
+)#
+lines(#
+  gc_range,#
+  predict(lr,window_data),#
+  col="green",#
+  pch=16,#
+  lwd=3#
+)#
+legend("topleft",c("Window estimate","DGLM estimate","LOESS estimate"),col=c("black","red","green"),pch=16)#
+dev.off()#
+png("./plots/corrected-data.png",width=1400,height=700)#
+par(mfrow=c(1,2),mar=c(5,5,5,5))#
+smoothScatter(#
+  data$gc,#
+  data$y_loess_corrected,#
+  ylim=c(-5,5),#
+  xlim=c(0,1),#
+  main="LOESS corrected data",#
+  ylab="log2(tumor/liver)",#
+  xlab="GC content",#
+  cex.lab=2.0,#
+  cex.main=2.0,#
+  cex.axis=2.0#
+)#
+smoothScatter(#
+  data$gc,#
+  data$y_dglm_corrected,#
+  ylim=c(-5,5),#
+  xlim=c(0,1),#
+  main="DGLM corrected data",#
+  ylab="log2(tumor/liver)",#
+  xlab="GC content",#
+  cex.lab=2.0,#
+  cex.main=2.0,#
+  cex.axis=2.0#
+)#
+dev.off()
