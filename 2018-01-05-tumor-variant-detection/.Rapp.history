@@ -1,0 +1,270 @@
+library(argparse)
+parser <- ArgumentParser()
+?parser$add_argument
+? ArgumentParser
+?DESeq
+data <- data.frame()
+factor_name="test"
+data[[factor_name]] <- c(1,2,3)
+data <- data.frame(row.names=c('a','b','c'))
+data
+data <- data.frame(row.names=c('a','b','c'))
+data
+data[[factor_name]] <- c(1,2,3)
+data
+?DESeq
+?results
+library(org.Hs.eg.db)
+org.Hs.egSYMBOL
+library(DESeq2)
+?write.table
+?counts
+d1 <- read.csv("~/Downloads/OL_6h_T3_vs_OL_6h_DMSO.gct",header=T)
+d1[1:5,]
+d1 <- read.csv("~/Downloads/OL_6h_T3_vs_OL_6h_DMSO.gct",header=T,sep='\t')
+d1[1:5,]
+d2 <- read.csv("~/Downloads/OL_6h_GC1_vs_OL_6h_DMSO.gct",header=T,sep='\t')
+d2[1:5,]
+colData1 = data.frame(condition=c("a","a","a","b","b","b"), row.names=colnames(d1))
+d1.1 <- d1[,c(3,8)]
+d1.1[1:5,]
+d1.1 <- d1[,c(3:8)]
+d1.1[1:5,]
+row.names(d1.1) <- d1$Name
+d2.1 <- d2[,c(3:8)]
+row.names(d2.1) <- d2$Name
+colData1 = data.frame(condition=c("a","a","a","b","b","b"), row.names=colnames(d1.1))
+colData2 = data.frame(condition=c("a","a","a","b","b","b"), row.names=colnames(d2.1))
+dds1 <- DESeqDataSetFromMatrix(countData = countData, colData = colData,design=~condition)
+dds1 <- DESeqDataSetFromMatrix(countData = d1.1, colData = colData1,design=~condition)
+dds2 <- DESeqDataSetFromMatrix(countData = d2.1, colData = colData2,design=~condition)
+dds1
+sizeFactors(dds1)
+dds1 <- DESeq(dds1)
+dds2 <- DESeq(dds2)
+sizeFactors(dds1)
+sizeFactors(dds2)
+?sizeFactors
+"lrt" %in% c("lrt","wald")
+"ldrt" %in% c("lrt","wald")
+trans = list("+":"plus", "-":"minus")
+trans
+trans = list("+":"plus", "\-":"minus")
+trans = list("+":"plus", "-":"minus")
+trans <- list()
+trans[["+"]]="plus"
+trans
+trans = list("+"="plus", "-"="minus")
+trans
+?read.table
+factor="Factor1:1,1,1,2,2,2"
+factor_name = strsplit(factor,":")[[1]][1]
+factor_name
+factors = strsplit(strsplit(factor,":")[[1]][2])[[1]]
+factors = strsplit(strsplit(factor,":")[[1]][2])
+strsplit(factor,":")[[1]][2]
+factors = strsplit(strsplit(factor,":")[[1]][2],",")[[1]]
+factors
+data <- read.csv("./Desktop/Group_1_vs_Group_2.norm.gct",skip=2,header=T)
+data[1:5,]
+data <- read.csv("./Desktop/Group_1_vs_Group_2.norm.gct",skip=2,header=T,sep="\t")
+data[1:5,]
+row.names(data) <- data["Name"]
+row.names(data) <- as.character(data["Name"])
+data["Name"][1:5]
+data["Name"]
+row.names(data) <- as.character(data["Name"])
+rownames(data) <- as.character(data["Name"])
+length(as.character(data["Name"]))
+dim(data)
+length(as.character(data[,"Name"]))
+row.names(data) <- as.character(data[,"Name"])
+data[1:5,]
+data <- data[,setdiff(colnames(data),c("Name","Description"))]
+data[1:5,]
+write.table(data,"./Desktop/Group_1_vs_Group_2.norm.txt",quote=F,sep="\t")
+countData <- as.matrix(read.table("~/Desktop/Group_1_vs_Group_2.norm.txt", sep="\t", comment.char="", quote="", header=T, row.names=1))
+countData[1:5,]
+countData[1:5,1]
+countData[1:5,1]+1
+colData <- data.frame(row.names=colnames(countData))
+colData[["Factor1"]] <- factor(c("1","1","1","2","2","2"))
+fullmodel<-"~Factor1"
+library(DESeq2)
+dds <- DESeqDataSetFromMatrix(#
+    countData = countData,#
+    colData = colData,#
+    design = fullmodel#
+  )
+colData
+countData[1:10,]
+as.numeric(countData[1:10,])
+data <- read.table("~/Desktop/Group_1_vs_Group_2.gct",sep="\t",skip=2,header=T)
+data[1:5,]
+row.names(data) <- data[,"Name"]
+data <- data[,setdiff(colnames(data),c("Name","Description"))]
+data[1:5,]
+write.table(data,"./Desktop/Group_1_vs_Group_2.txt",quote=F,sep="\t")
+formula("~Factor1")
+?results
+trans = list("\+"="plus", "-"="minus")
+name="+and+"
+name <- gsub("\+", "plus", name)
+name <- gsub("\\+", "plus", name)
+name
+?DESeq
+qchisq(0.95,31)
+qchisq(0.95,29)
+qchisq(0.95, 273119)
+library(org.Hs.eg.db)
+library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+length(genes)
+genes
+genes[["FGFR2"]]
+genes()
+genes("FGFR2")
+?genes
+dim(genes(TxDb.Hsapiens.UCSC.hg19.knownGene,c("tx_name")))
+length(genes(TxDb.Hsapiens.UCSC.hg19.knownGene,c("tx_name")))
+gg <- genes(TxDb.Hsapiens.UCSC.hg19.knownGene,c("tx_name"))
+gg[1]
+gg[2]
+gg["FGFR2"]
+gg[["FGFR2"]]
+gg$tx_name
+gg$tx_name[["100"]]
+gg$tx_name[["1000"]]
+gg$tx_name[["5000"]]
+gg$tx_name[["7000"]]
+gg$tx_name[["7001"]]
+gg$tx_name[["7002"]]
+gg <- genes(TxDb.Hsapiens.UCSC.hg19.knownGene,c("tx_name","tx_id"))
+gg
+gg <- genes(TxDb.Hsapiens.UCSC.hg19.knownGene,c("tx_name","tx_id","gene_id"))
+gg
+g = genes(TxDb.Hsapiens.UCSC.hg19.knownGene)
+g
+g[["1"]]
+g[[1]]
+wilcox.test(c(1,2,3),c(3,4,5,6))
+tt + wilcox.test(c(1,2,3),c(3,4,5,6))
+tt + wilcox.test(c(1,2,3),c(4,5,6))
+tt <- wilcox.test(c(1,2,3),c(4,5,6))
+tt
+tt$statistic
+tt <- wilcox.test(c(1,2,3),c(1.2,2.5,4,5,6))
+tt$statistic
+tt
+factor(c("1","5","10"))
+factor(c("1","10","5"))
+factors <- c("1","2","3")
+factors
+factors <- c("1","10","5","1","10","5")
+factors
+factor(factors,levels=unique(factors))
+factor(factors,levels=sort(unique(factors)))
+levels(factors)
+unique(factors)
+is.numeric("a")
+is.numeric("1")
+is.numeric("13")
+x <- c("1","10","a")
+grepl("^[[:digit:]]+L",x)
+as.numeric(x)
+grepl("^[[:digit:]]",x)
+x
+x <- c("1","10","a","one")
+grepl("^[[:digit:]]",x)
+factor(c(1,50,20))
+all(grepl("^[[:digit:]]",x))
+as.numeric(c("1","5"))
+tt = c(1,10,5)
+sort(tt)
+spike_in <- list()
+factors <- list("a"=c("1","10","5","1","10","5"))
+factors
+factor="a"
+all(grepl("^[[:digit:]]", factors[[factor]]))
+factors.i <- as.numeric(factors[[factor]])
+factor.i_levels <- sort(unique(factors.i))
+factor.i_levels
+spike_in[[factor]] <- factor(factors,levels=factor_levels)
+spike_in[[factor]] <- factor(factors,levels=factor.i.levels)
+factor.i.levels <- sort(unique(factors.i))
+spike_in[[factor]] <- factor(factors,levels=factor.i.levels)
+spike_in
+factospike_in[[factor]] <- factor(factors.i,levels=factor.i.levels)
+spike_in[[factor]] <- factor(factors.i,levels=factor.i.levels)
+spike_in
+library(DESeq2)
+sessionInfo()
+4,166.67 * 24
+4166.67 * 24
+-10 * log10(0.05)
+10**(40 / 10)
+(40 / 10)
+(13 / 10)
+10**(13 / 10)
+(13 / 10)**10
+10**(13 / 10)
+?log10()
+10^(13 / 10)
+10^(13 / -10)
+10^(40 / -10)
+unique(c("a","a","b","c"))
+unique(c("a","a","b","c","a"))
+unique(c("a","b","c","a"))
+unique(c("b","c","a"))
+test = "test"
+if (test) print("boo")
+if (test) {print("boo")}
+if (is.null(test)) {print("boo")}
+if (~is.null(test)) {print("boo")}
+if (!is.null(test)) {print("boo")}
+54512330 - 54125350
+pacman::p_load(jsonlite, httr, parallel, readxl)
+install.packages("readxl")
+install.packages("readxl",repos="https://cran.cnr.berkeley.edu/")
+pacman::p_load(jsonlite, httr, parallel, readxl)
+loadNamespace('bbmle')
+library(broom)
+install.packages("broom",repos="https://cran.cnr.berkeley.edu/")
+library(broom)
+loadNamespace('mygene')
+install.packages("mygene",repos="https://cran.cnr.berkeley.edu/")
+if (!requireNamespace("BiocManager", quietly = TRUE))#
+    install.packages("BiocManager")#
+BiocManager::install("mygene", version = "3.8")
+loadNamespace('mygene')
+loadNamespace('biomaRt')
+setwd("~/Dropbox/Documents/Blog/murphycj.github.io-posts/2018-06-23-tumor-genotype-prediction/")
+library(ggplot2)#
+#
+data <- read.csv("results.csv",header=T)
+setwd("../2018-01-05-tumor-variant-detection/")
+library(ggplot2)#
+#
+data <- read.csv("results.csv",header=T)
+data[1:5,]
+ggplot(data,aes(total_mutations~Tn)) + geom_boxplot()
+ggplot(data,aes(y=total_mutations, x=Tn)) + geom_boxplot()
+unique(data$Tn)
+sort(unique(data$Tn))
+sort(unique(data$Tn))
+data <- read.csv("results.csv",header=T)#
+data$Tn <- factor(data$Tn, levels=sort(unique(data$Tn)))#
+data$Tr <- factor(data$Tr, levels=sort(unique(data$Tr)))#
+data$Cn <- factor(data$Cn, levels=sort(unique(data$Cn)))#
+data$Cc <- factor(data$Cc, levels=sort(unique(data$Cc)))#
+data$Cr <- factor(data$Cr, levels=sort(unique(data$Cr)))
+ggplot(data,aes(y=total_mutations, x=Tn)) + geom_boxplot()
+ggplot(data,aes(y=total_mutations, x=Tn, group=Tr)) + geom_boxplot()
+sort(unique(data$Tr))
+ggplot(data,aes(y=total_mutations, x=Tn, color=Tr)) + geom_boxplot()
+ggplot(data,aes(y=total_mutations, x=Tn)) +#
+  geom_boxplot() +#
+  ylab("Total mutations")
+ggplot(data,aes(y=total_mutations, x=Tn)) +#
+  geom_boxplot() +#
+  ylab("Total mutations") +#
+  theme(text = element_text(size=20))
